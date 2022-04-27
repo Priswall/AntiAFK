@@ -6,35 +6,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Exiled.API.Enums;
 
 namespace AntiAFK
 {
     public class AntiAFK : Plugin<Config>
     {
-        private static readonly Lazy<AntiAFK> LazyInstance = new Lazy<AntiAFK>(() => new AntiAFK());
-        public static AntiAFK Instance = LazyInstance.Value;
-
+        public override string Author { get; } = "Priswall";
+        public override string Name { get; } = "AntiAFK";
+        public override string Prefix { get; } = "AntiAFK";
+        public override Version Version { get; } = new Version(1, 0, 0);
+        public override PluginPriority Priority => PluginPriority.Higher;
         private EventHandler eventHandler;
-
+        
         public override void OnEnabled()
         {
-            eventHandler = new EventHandler();
+            eventHandler = new EventHandler(this);
 
             Player.Left += eventHandler.OnLeft;
-            Player.Joined += eventHandler.OnJoined;
+            Player.Verified += eventHandler.OnVerified;
             Server.RoundStarted += eventHandler.OnRoundStarted;
             Server.RoundEnded += eventHandler.OnRoundEnded;
+            base.OnEnabled();
         }
 
         public override void OnDisabled()
         {
             Player.Left -= eventHandler.OnLeft;
-            Player.Joined -= eventHandler.OnJoined;
+            Player.Verified -= eventHandler.OnVerified;
             Server.RoundStarted -= eventHandler.OnRoundStarted;
             Server.RoundEnded -= eventHandler.OnRoundEnded;
 
             eventHandler.Destroy();
             eventHandler = null;
+            base.OnDisabled();
         }
     }
 }
