@@ -1,10 +1,5 @@
 ﻿using Exiled.API.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AntiAFK
 {
@@ -14,6 +9,9 @@ namespace AntiAFK
 
         [Description("Sets the time (in seconds) that players are allowed to be AFK before getting booted")]
         public int AfkTime { get; set; } = 300;
+
+        [Description("Toggles whether or not a kicked player should be replaced by a spectating one")]
+        public bool ShouldBeReplaced = true;
 
         [Description("Sets the message displayed on a users screen when they replace an AFK player")]
         public string AfkReplaceBroadcast { get; set; } = "A player was AFK, so you took their place";

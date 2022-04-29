@@ -4,7 +4,6 @@ using MEC;
 using Player = Exiled.API.Features.Player;
 using Exiled.Events.EventArgs;
 using Exiled.API.Features;
-using Exiled.API.Extensions;
 
 namespace AntiAFK
 {
@@ -74,25 +73,29 @@ namespace AntiAFK
                     // Kick and replace with the oldest spectating player
                     if (AFKState[player][2][0] >= plugin.Config.AfkTime)
                     {
-                        Player oldestSpectator = null;
-                        foreach(Player p in players)
+                        if (plugin.Config.ShouldBeReplaced)
                         {
-                            if(p == null) continue;
-                            if(oldestSpectator == null && p.Role == RoleType.Spectator)
+                            Player oldestSpectator = null;
+                            foreach (Player p in players)
                             {
-                                oldestSpectator = p;
-                                continue;
-                            }
-                            if(p.Role == RoleType.Spectator && AFKState[p][2][0] > AFKState[oldestSpectator][2][0])
+                                if (p == null) continue;
+                                if (oldestSpectator == null && p.Role == RoleType.Spectator)
+                                {
+                                    oldestSpectator = p;
+                                    continue;
+                                }
+                                if (p.Role == RoleType.Spectator && AFKState[p][2][0] > AFKState[oldestSpectator][2][0])
+                                {
+                                    oldestSpectator = p;
+                                }
+                            };
+                            if (oldestSpectator != null)
                             {
-                                oldestSpectator = p;
+                                oldestSpectator.SetRole(player.Role);
+                                oldestSpectator.Broadcast(5, plugin.Config.AfkReplaceBroadcast);
                             }
-                        };
-                        if(oldestSpectator != null)
-                        {
-                            oldestSpectator.SetRole(player.Role);
-                            oldestSpectator.Broadcast(5, plugin.Config.AfkReplaceBroadcast);
                         }
+                        player.Inventory.UserInventory.Items.Clear();
                         player.Kill("You were AFK for too long", "");
                         player.CustomInfo += ".K4AFK.";
                         Timing.CallDelayed(0.05f, () => { player.Kick("You were AFK for too long"); player.CustomInfo.Replace(".K4AFK.", ""); });
