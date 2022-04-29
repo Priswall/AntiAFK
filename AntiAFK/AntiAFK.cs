@@ -2,10 +2,7 @@
 using System;
 using Server = Exiled.Events.Handlers.Server;
 using Player = Exiled.Events.Handlers.Player;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Map = Exiled.Events.Handlers.Map;
 using Exiled.API.Enums;
 
 namespace AntiAFK
@@ -25,8 +22,12 @@ namespace AntiAFK
 
             Player.Left += eventHandler.OnLeft;
             Player.Verified += eventHandler.OnVerified;
+            Player.Died += eventHandler.OnDied;
+            Player.Spawning += eventHandler.OnSpawning;
+            Player.SpawningRagdoll += eventHandler.OnSpawningRagdoll;
             Server.RoundStarted += eventHandler.OnRoundStarted;
             Server.RoundEnded += eventHandler.OnRoundEnded;
+            Map.AnnouncingScpTermination += eventHandler.OnAnnouncingScpTermination;
             base.OnEnabled();
         }
 
@@ -34,8 +35,12 @@ namespace AntiAFK
         {
             Player.Left -= eventHandler.OnLeft;
             Player.Verified -= eventHandler.OnVerified;
+            Player.Died -= eventHandler.OnDied;
+            Player.Spawning -= eventHandler.OnSpawning;
+            Player.SpawningRagdoll -= eventHandler.OnSpawningRagdoll;
             Server.RoundStarted -= eventHandler.OnRoundStarted;
             Server.RoundEnded -= eventHandler.OnRoundEnded;
+            Map.AnnouncingScpTermination -= eventHandler.OnAnnouncingScpTermination;
 
             eventHandler.Destroy();
             eventHandler = null;
